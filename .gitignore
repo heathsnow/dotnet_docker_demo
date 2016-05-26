@@ -1,0 +1,9 @@
+###
+# Ignore Vagrant files
+###
+.vagrant
+
+###
+# Ignore Rubymine files
+###
+.idea

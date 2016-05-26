@@ -6,6 +6,6 @@ ADD ./app /app
 
 EXPOSE 5000
 
-RUN /bin/bash -c 'cd /app && dotnet restore'
+RUN /bin/bash -c 'cd /app/src/MusicStore && dotnet restore'
 
 CMD /bin/bash -c 'cd /app/src/MusicStore && dotnet run'

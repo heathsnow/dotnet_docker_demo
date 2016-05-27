@@ -25,12 +25,12 @@ git@github.com:dustinvanbuskirk/MusicStore.git
 Set app_directory to MusicStore directory
 
 ```
-export app_directory=../MusicStore/src/MusicStore
+export app_directory=../../MusicStore/src/MusicStore
 ```
 
 Change directory into the dotnet_docker_demo repo
 ```
-cd dotnet_docker_demo
+cd dotnet_docker_demo/development_environment
 ```
 
 Vagrant up new VM

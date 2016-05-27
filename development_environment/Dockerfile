@@ -1,11 +1,15 @@
 FROM microsoft/dotnet:1.0.0-preview1
 
+EXPOSE 4088
+
+EXPOSE 5000
+
 CMD ['mkdir /app']
 
 ADD ./app /app
 
-EXPOSE 5000
+WORKDIR '/app/src/MusicStore'
 
-RUN /bin/bash -c 'cd /app/src/MusicStore && dotnet restore'
+RUN /usr/bin/dotnet restore
 
-CMD /bin/bash -c 'cd /app/src/MusicStore && dotnet run'
+CMD /usr/bin/dotnet run

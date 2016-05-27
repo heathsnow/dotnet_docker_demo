@@ -38,9 +38,9 @@ Vagrant.configure('2') do |config|
     # Copy Dockerfile
     default.vm.provision 'file', source: './Dockerfile', destination: 'Dockerfile'
     # Run Docker Compose build
-    default.vm.provision 'shell', inline: 'cd /vagrant && docker-compose build'
+    default.vm.provision 'shell', inline: 'cd /vagrant && docker-compose build --no-cache'
     # Run Docker Compose up
-    default.vm.provision 'shell', inline: 'cd /vagrant && docker-compose up -d'
+    default.vm.provision 'shell', inline: 'cd /vagrant && docker-compose up -d --force-recreate --remove-orphans'
   end
 
 end

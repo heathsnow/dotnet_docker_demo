@@ -1,0 +1,46 @@
+required_plugins = %w( landrush )
+required_plugins.each do |plugin|
+  system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
+end
+
+app_directory = ENV['app_directory']
+
+docker_version = '1.11.1'
+
+Vagrant.configure('2') do |config|
+
+  config.vm.provider 'virtualbox' do |v|
+    v.memory = 2048
+    v.cpus = 2
+  end
+
+  config.vm.define 'default' do |default|
+    default.vm.box_url =
+        'https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box'
+    default.vm.box = 'trusty-server-cloudimg-amd64-vagrant-disk1.box'
+    default.vm.hostname = 'development.vagrant'
+    default.vm.synced_folder app_directory, '/vagrant/app'
+    default.landrush.enabled = true
+    default.landrush.tld = 'vagrant'
+    default.landrush.host 'development.vagrant'
+    default.landrush.guest_redirect_dns = false
+    # Install Docker Engine
+    default.vm.provision 'install-docker',
+                        type: 'shell',
+                        privileged: true,
+                        path: 'install-docker.sh',
+                        args: [ docker_version ]
+    # Install Docker Compose
+    default.vm.provision 'shell', inline: '[ -f /usr/local/bin/docker-compose ] && echo "Docker Compose Found" || curl -L https://github.com/docker/compose/releases/download/1.7.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose'
+    default.vm.provision 'shell', inline: '[ -x /usr/local/bin/docker-compose ] && echo "Docker Compose Already Executable" || chmod +x /usr/local/bin/docker-compose'
+    # Copy Docker Compose file
+    default.vm.provision 'file', source: './docker-compose.yml', destination: 'docker-compose.yml'
+    # Copy Dockerfile
+    default.vm.provision 'file', source: './Dockerfile', destination: 'Dockerfile'
+    # Run Docker Compose build
+    default.vm.provision 'shell', inline: 'cd /vagrant && docker-compose build --no-cache'
+    # Run Docker Compose up
+    default.vm.provision 'shell', inline: 'cd /vagrant && docker-compose up -d --force-recreate --remove-orphans'
+  end
+
+end

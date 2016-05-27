@@ -8,7 +8,7 @@ CMD ['mkdir /app']
 
 ADD ./app /app
 
-WORKDIR '/app/src/MusicStore'
+WORKDIR '/app'
 
 RUN /usr/bin/dotnet restore
 
